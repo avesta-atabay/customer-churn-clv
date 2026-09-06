@@ -1,0 +1,43 @@
+-- Customer Churn & CLV Analytics Platform
+-- Power BI measures for the Executive Overview page.
+-- Main table: customer_360_all
+
+Total Customers =
+DISTINCTCOUNT(customer_360_all[customer_id])
+
+Churn Customers =
+CALCULATE(
+    DISTINCTCOUNT(customer_360_all[customer_id]),
+    customer_360_all[predicted_churn] = 1
+)
+
+Churn Rate =
+DIVIDE(
+    [Churn Customers],
+    [Total Customers],
+    0
+)
+
+Average Churn Probability =
+AVERAGE(customer_360_all[churn_probability])
+
+Expected 90D CLV =
+SUM(customer_360_all[expected_clv_90d])
+
+Revenue at Risk =
+SUM(customer_360_all[revenue_at_risk_90d])
+
+High Risk Customers =
+CALCULATE(
+    DISTINCTCOUNT(customer_360_all[customer_id]),
+    customer_360_all[risk_level] IN { "High Risk", "Critical Risk" }
+)
+
+Critical Risk Customers =
+CALCULATE(
+    DISTINCTCOUNT(customer_360_all[customer_id]),
+    customer_360_all[risk_level] = "Critical Risk"
+)
+
+Total Revenue at Risk =
+SUM(customer_360_all[revenue_at_risk_90d])
